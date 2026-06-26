@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "662117121121",
+    "project_id": "memursenindirimler",
+    "storage_bucket": "memursenindirimler.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662117121121:android:d220a70cd905de018abe20",
+        "android_client_info": {
+          "package_name": "com.muzaffersahin.memursen_indirimler"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcTi7_7om2NOFs5wHKPvQEHLRKLnEMPG0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

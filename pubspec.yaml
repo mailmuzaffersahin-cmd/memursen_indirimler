@@ -1,0 +1,49 @@
+name: memursen_indirimler
+description: "Memur-Sen Kayseri Anlaşmalı İndirimler"
+publish_to: 'none'
+
+version: 1.0.3+7
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  firebase_core: ^3.15.2
+  firebase_auth: ^5.7.0
+  cloud_firestore: ^5.6.12
+  firebase_storage: ^12.4.10
+
+  file_picker: ^10.3.7
+  excel: ^4.0.6
+
+  geolocator: ^13.0.2
+  geocoding: ^3.0.0
+  url_launcher: ^6.3.2
+  firebase_messaging: ^15.2.10
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/logo.png
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/logo.png"
