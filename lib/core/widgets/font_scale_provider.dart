@@ -85,7 +85,7 @@ class _FontScaleProviderState extends State<FontScaleProvider> {
 
 
 
-Widget _fontButton(String text, VoidCallback onTap) {
+Widget fontScaleButton(String text, VoidCallback onTap) {
   return InkWell(
     onTap: onTap,
     child: SizedBox(

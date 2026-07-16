@@ -82,11 +82,11 @@ class MemurSenApp extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _fontButton('A+', fontState.increase),
+                        fontScaleButton('A+', fontState.increase),
                         const Divider(height: 1, color: Colors.white24),
-                        _fontButton('A', fontState.reset),
+                        fontScaleButton('A', fontState.reset),
                         const Divider(height: 1, color: Colors.white24),
-                        _fontButton('A-', fontState.decrease),
+                        fontScaleButton('A-', fontState.decrease),
                       ],
                     ),
                   ),
