@@ -4400,4 +4400,35 @@ class PrivacyPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('KVKK ve Gizlilik Politikası'),
       ),
-      body: SingleChildScrollV
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: const Text(
+          '''
+Memur-Sen Kayseri İndirim Uygulaması kullanıcı bilgilerinin güvenliğine önem verir.
+
+Uygulama içerisinde kullanılan bilgiler:
+- Ad Soyad
+- E-posta
+- Telefon bilgisi
+- Konum bilgisi (yakındaki anlaşmalar için)
+
+yalnızca uygulama hizmetlerinin sunulması amacıyla kullanılmaktadır.
+
+Kullanıcı bilgileri üçüncü kişilerle paylaşılmaz.
+
+Uygulama Firebase altyapısı kullanmaktadır.
+
+KVKK kapsamında kullanıcı dilediği zaman bilgilerinin silinmesini talep edebilir.
+
+İletişim:
+memursen.kayseri.temsilciligi@gmail.com
+          ''',
+          style: TextStyle(
+            fontSize: 15,
+            height: 1.7,
+          ),
+        ),
+      ),
+    );
+  }
+}
