@@ -1,9 +1,12 @@
-// This is a basic Flutter widget test.
+// Temel duman (smoke) testi.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Not: Bu proje Firebase'e bağımlı (Firestore/Auth). Splash ekranı 3 saniye
+// sonra HomePage'e geçiyor ve HomePage Firestore akışlarını dinliyor; bu da
+// gerçek/mock bir Firebase kurulumu olmadan test ortamında çökmeye yol açar.
+// Bu yüzden bu test kasıtlı olarak yalnızca ilk kareyi (splash ekranı) test
+// eder — Firestore'a hiç dokunmaz. Firebase'e bağımlı ekranların (HomePage,
+// AdminGate, vb.) tam kapsamlı testleri, `firebase_core` mock kurulumu
+// eklendikten sonra (bkz. TEST_REPORT_TR.md) ayrı dosyalarda yazılacaktır.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,24 +14,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:memursen_indirimler/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp() as Widget);
+  testWidgets('MemurSenApp splash ekranını hatasız açar', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MemurSenApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Yalnızca ilk kareyi çiziyoruz; 3 saniyelik zamanlayıcıyı (ve ardından
+    // gelen Firestore çağrılarını) tetiklememek için pumpAndSettle
+    // KULLANMIYORUZ.
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
-}
-
-class MyApp {
-  const MyApp();
-}
+    // Splash ekranı beyaz arka plan ü

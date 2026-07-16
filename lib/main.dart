@@ -504,14 +504,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void openAdmin(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) =>
-            user == null ? const AdminLoginPage() : const AdminDashboardPage(),
-      ),
+      MaterialPageRoute(builder: (_) => const AdminGate()),
     );
   }
 
@@ -1661,6 +1656,32 @@ if (imageUrl.trim().isNotEmpty)
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Yönetici oturum durumunu her zaman canlı (reactive) biçimde kontrol eder.
+/// Tek seferlik `currentUser` kontrolü yerine `authStateChanges()` akışını
+/// dinler; böylece oturum durumu ekranlar arası geçişlerde asla bayatlamaz
+/// ve "listeye dönünce oturum kapanması" türü hatalar oluşmaz.
+class AdminGate extends StatelessWidget {
+  const AdminGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final user = snapshot.data;
+        return user == null
+            ? const AdminLoginPage()
+            : const AdminDashboardPage();
+      },
     );
   }
 }
@@ -4379,35 +4400,4 @@ class PrivacyPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('KVKK ve Gizlilik Politikası'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: const Text(
-          '''
-Memur-Sen Kayseri İndirim Uygulaması kullanıcı bilgilerinin güvenliğine önem verir.
-
-Uygulama içerisinde kullanılan bilgiler:
-- Ad Soyad
-- E-posta
-- Telefon bilgisi
-- Konum bilgisi (yakındaki anlaşmalar için)
-
-yalnızca uygulama hizmetlerinin sunulması amacıyla kullanılmaktadır.
-
-Kullanıcı bilgileri üçüncü kişilerle paylaşılmaz.
-
-Uygulama Firebase altyapısı kullanmaktadır.
-
-KVKK kapsamında kullanıcı dilediği zaman bilgilerinin silinmesini talep edebilir.
-
-İletişim:
-memursen.kayseri.temsilciligi@gmail.com
-          ''',
-          style: TextStyle(
-            fontSize: 15,
-            height: 1.7,
-          ),
-        ),
-      ),
-    );
-  }
-}
+      body: SingleChildScrollV
