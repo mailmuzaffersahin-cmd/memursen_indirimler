@@ -1,0 +1,95 @@
+rules_version = '2';
+
+// ONEMLI - BU DOSYAYI CANLIYA ALMADAN ONCE:
+// Asagidaki kurallar 'admins' koleksiyonunda bir dokumani olan (doc id =
+// Firebase Auth UID) kullanicilari admin sayar. Eger Firebase Console'da
+// bu koleksiyonu ONCEDEN OLUSTURUP KENDI UID'nizi eklemezseniz, bu kurallar
+// canliya alindiginda MEVCUT ADMIN GIRISINIZ CALISMAZ HALE GELIR.
+// Bootstrap adimlari SECURITY_RULES_TR.md dosyasinda anlatiliyor.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Admin = 'admins' koleksiyonunda kendi UID'si ile bir dokumani olan
+    // kullanici. Bu, "herhangi bir Firebase Auth hesabi = admin" seklindeki
+    // eski (guvensiz) varsayima gore onemli bir iyilestirmedir; ozellikle
+    // sendika yetkilileri artik kendi hesaplariyla giris yaptiklarinda
+    // (bkz. authorized_users olusturma akisi) admin paneline erisim
+    // KAZANAMAZLAR.
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // agreements: herkes (misafir dahil) okuyabilir; sadece admin yazabilir.
+    match /agreements/{agreementId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // temsilciler: herkes okuyabilir; sadece admin yazabilir.
+    match /temsilciler/{repId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // app_settings: herkese acik ayarlar (ör. temsilci iletisim bilgisi);
+    // sadece admin degistirebilir.
+    match /app_settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // authorized_users: bir kullanici SADECE kendi basvuru dokumanini
+    // (doc id = kendi uid'si) olusturabilir ve okuyabilir. Durum/yetki
+    // alanlarini degistirmek (onaylama vb.) sadece admin'e aittir.
+    match /authorized_users/{uid} {
+      allow create: if isSignedIn() && request.auth.uid == uid;
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // business_applications: herkes basvuru olusturabilir (form girisi icin
+    // hesap zorunlulugu yok), yalnizca admin okuyup yonetebilir.
+    match /business_applications/{appId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // organizations, roles: okuma icin giris yapmis olmak yeterli (uygulama
+    // ici RBAC kontrolleri bu verilere ihtiyac duyar), yazma sadece admin.
+    match /organizations/{orgId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /roles/{roleId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // admins: bu koleksiyon YALNIZCA Firebase Console'dan elle yonetilir.
+    // Istemciden hicbir yazma islemine izin verilmez (bir admin kendini
+    // veya baskasini istemci tarafindan admin yapamaz - bu, yetki
+    // yukseltme saldirisini onler).
+    match /admins/{uid} {
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // auditLogs: sadece admin okuyabilir/yazabilir, degistirilemez/silinemez.
+    match /auditLogs/{logId} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // Yukarida tanimlanmayan her sey varsayilan olarak KAPALI.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

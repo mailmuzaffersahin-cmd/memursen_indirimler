@@ -1,0 +1,51 @@
+rules_version = '2';
+
+// ONEMLI: firestore.rules ile ayni 'admins' koleksiyonu tabanli admin
+// kontrolunu kullanir. Once SECURITY_RULES_TR.md'deki bootstrap adimlarini
+// tamamlayin, aksi halde canliya alindiginda mevcut admin girisiniz dosya
+// yukleyemez hale gelir.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+
+    function isValidImage() {
+      return request.resource.contentType.matches('image/.*') &&
+        request.resource.size < 10 * 1024 * 1024; // 10 MB ust siniri
+    }
+
+    function isValidDocument() {
+      return (request.resource.contentType.matches('image/.*') ||
+              request.resource.contentType == 'application/pdf') &&
+        request.resource.size < 20 * 1024 * 1024; // 20 MB ust siniri
+    }
+
+    // Anlasma logolari: herkes gorebilir (uygulamada gosteriliyor),
+    // sadece admin yukleyebilir/degistirebilir. Yuklenen dosya tipi ve
+    // boyutu sunucu tarafinda dogrulanir.
+    match /agreement_logos/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+    }
+
+    // Anlasma belgeleri (ör. sozlesme PDF taramalari): herkese acik degil,
+    // sadece admin erisebilir/yukleyebilir.
+    match /agreement_files/{fileName} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && isValidDocument();
+    }
+
+    // Tanimlanmamis her yol varsayilan olarak KAPALI.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
