@@ -21,3 +21,5 @@ export 'package:memursen_indirimler/features/representatives/representatives_pag
 export 'package:memursen_indirimler/features/contact/contact_page.dart';
 export 'package:memursen_indirimler/features/favorites/favorites_page.dart';
 export 'package:memursen_indirimler/features/privacy/privacy_page.dart';
+export 'package:memursen_indirimler/features/administration/organizations_page.dart';
+export 'package:memursen_indirimler/features/administration/roles_page.dart';

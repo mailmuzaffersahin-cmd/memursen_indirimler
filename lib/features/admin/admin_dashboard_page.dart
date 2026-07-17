@@ -283,6 +283,28 @@ class AdminDashboardPage extends StatelessWidget {
               );
             },
           ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.apartment),
+            label: const Text('Organizasyon Yönetimi'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const OrganizationsPage()),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.admin_panel_settings_outlined),
+            label: const Text('Rol ve Yetki Yönetimi'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const RolesPage()),
+              );
+            },
+          ),
           const SizedBox(height: 24),
           const Text(
             'Excel sütun sırası: Firma Adı, Başlık, Kategori, İndirim, İl, İlçe, Adres, Yetkili Ad Soyad, Yetkili Telefon, Kurumsal Telefon, Açıklama, Kapsam, Başlangıç Tarihi, Bitiş Tarihi, Enlem, Boylam',
